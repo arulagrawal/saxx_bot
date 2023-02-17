@@ -1,5 +1,5 @@
 import { Command } from "../interfaces/command";
-import { time } from "./time";
+import { todayForUser } from "./todayforUser";
 import { totalForUser } from "./totalforUser";
 
-export const CommandList: Command[] = [time, totalForUser];
+export const CommandList: Command[] = [totalForUser, todayForUser];
