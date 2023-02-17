@@ -1,7 +1,12 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { getTimeSpentTotal } from "../database/event";
 import { Command } from "../interfaces/command";
-import { formatDurationFromMillis } from "../utils/date";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 export const totalForUser: Command = {
     data: new SlashCommandBuilder()
@@ -18,8 +23,14 @@ export const totalForUser: Command = {
         const text = interaction.options.get("username", true);
         
         if (text.value) {
-            const timeSpentInMilliseconds = getTimeSpentTotal(text.value as string);
-            await interaction.editReply(formatDurationFromMillis((await timeSpentInMilliseconds)));
+            const timeSpentInMilliseconds = await getTimeSpentTotal(text.value as string);
+            console.log(`timespent: ${timeSpentInMilliseconds}`)
+            if (!timeSpentInMilliseconds || timeSpentInMilliseconds == 0) {
+                await interaction.editReply(`${text.value as string} has not spent any time in text channels.`)
+                return
+            }
+            await interaction.editReply(dayjs.duration(timeSpentInMilliseconds).humanize());
+
         }
         else {
             await interaction.editReply("something went wrong getting your input :(")

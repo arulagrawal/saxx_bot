@@ -1,4 +1,8 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc"
 import { prisma } from "./db";
+
+dayjs.extend(utc);
 
 export async function createSession(username: string, startTime: Date) {
     const c = await prisma.currentSession.create({
