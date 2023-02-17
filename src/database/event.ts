@@ -58,3 +58,22 @@ export async function updateSession(username: string, endTime: Date) {
 
     return completedSession;
 }
+
+export async function getTimeSpentTotal(username: string) {
+    const sessions = await prisma.completedSession.findMany({
+        where: {
+            user: {
+                name: username,
+            },
+        },
+    });
+
+    let totalTime = 0;
+
+    sessions.forEach(session => {
+        const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
+        totalTime += duration;
+    });
+
+    return totalTime;
+}
