@@ -5,14 +5,14 @@ export const voiceUpdate = async (oldState: VoiceState, newState: VoiceState) =>
     let newUserChannel = newState.channel;
     let oldUserChannel = oldState.channel;
     if (oldUserChannel === null && newUserChannel !== null) {
-        const user = newState.member?.user?.username ?? "wtf";
+        const user = newState.member?.user?.username as string;
         console.log(`${user} joined`);
         const date = new Date();
 
         const session = createSession(user, date);
         console.log(session);
     } else if (oldUserChannel !== null && newUserChannel === null) {
-        const user = oldState.member?.user?.username ?? "wtf";
+        const user = oldState.member?.user?.username as string;
         console.log(`${user} left`);
         const date = new Date();
 

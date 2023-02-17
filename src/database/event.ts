@@ -37,6 +37,11 @@ export async function updateSession(username: string, endTime: Date) {
     });
 
     const id = user?.CurrentSession?.id;
+    if (!id) {
+        // there is no current session, the user was already connected when the bot joined :(
+        // in the future the bot could look at who is connected when the bot joins?
+        return
+    }
     const currentSession = await prisma.currentSession.delete({
         where: {
             id: id
