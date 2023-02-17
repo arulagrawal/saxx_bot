@@ -90,12 +90,14 @@ export async function getTimeSpentTotal(username: string) {
 export async function getTimeSpentToday(username: string) {
     const now = dayjs.utc().toDate();
     const end = dayjs.utc().endOf('day').toDate();
+    const start = dayjs.utc().startOf('day').toDate();
     const sessions = await prisma.completedSession.findMany({
         where: {
             user: {
                 name: username,
             },
             leaveTime: {
+                gte: start,
                 lte: end,
             },
         },
