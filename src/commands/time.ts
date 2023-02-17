@@ -3,14 +3,14 @@ import { Command } from "../interfaces/command";
 
 export const time: Command = {
     data: new SlashCommandBuilder()
-    .setName("100")
-    .setDescription("Check in for the 100 Days of Code challenge.")
-    .addStringOption((option) =>
-      option
-        .setName("message")
-        .setDescription("The message to go in your 100 Days of Code update.")
-        .setRequired(true)
-    ),
+        .setName("time")
+        .setDescription("Check in for the 100 Days of Code challenge.")
+        .addStringOption((option) =>
+            option
+                .setName("message")
+                .setDescription("The message to go in your 100 Days of Code update.")
+                .setRequired(true)
+        ),
     run: async (interaction) => {
         await interaction.deferReply();
         const { user } = interaction;
@@ -18,5 +18,5 @@ export const time: Command = {
         console.log(`the user typed in ${text.value}`);
 
         await interaction.editReply("text");
-    }  
+    }
 };

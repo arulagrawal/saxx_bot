@@ -1,4 +1,4 @@
-import { Client, Events } from "discord.js";
+import { Client } from "discord.js";
 import { IntentOptions } from "./config/IntentOptions";
 import { onInteraction } from "./events/newInteraction";
 import { onReady } from "./events/onReady";
@@ -28,15 +28,12 @@ let dates: Record<string, event> = {};
       const user = newState.member?.user?.username ?? "wtf";
       console.log(`${user} joined`);
       const date = new Date();
-      dates[user] = {joinTime: date};
-
+      dates[user] = { joinTime: date };
     } else if (oldUserChannel !== null && newUserChannel === null) {
       const user = oldState.member?.user?.username ?? "wtf";
       console.log(`${user} left`);
       const date = new Date();
       dates[user].leaveTime = date;
-
-
     } else if (
       oldUserChannel !== null &&
       newUserChannel !== null &&
