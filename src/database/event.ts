@@ -86,3 +86,38 @@ export async function getTimeSpentTotal(username: string) {
 
     return totalTime;
 }
+
+export async function getTimeSpentToday(username: string) {
+    const now = dayjs.utc().toDate();
+    const end = dayjs.utc().endOf('day').toDate();
+    const sessions = await prisma.completedSession.findMany({
+        where: {
+            user: {
+                name: username,
+            },
+            leaveTime: {
+                lte: end,
+            },
+        },
+    });
+
+    let totalTime = 0;
+
+    try {
+        const currentSession = await prisma.currentSession.findFirstOrThrow({
+            where: {
+                user: {
+                    name: username,
+                },
+            },
+        });
+        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
+    } catch (e) {}
+
+    sessions.forEach(session => {
+        const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
+        totalTime += duration;
+    });
+
+    return totalTime;
+}
