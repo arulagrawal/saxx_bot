@@ -123,3 +123,20 @@ export async function getTimeSpentToday(snowflake: string) {
 
     return totalTime;
 }
+
+interface time {
+    snowflake: string;
+    username: string;
+    timeSpent: number;
+}
+
+export async function getTotalTimeForAllUsers() {
+    const users = await prisma.user.findMany();
+
+    let times: time[] = [];
+    for await (const user of users) {
+        const total = await getTimeSpentTotal(user.snowflake);
+        times.push({snowflake: user.snowflake, username: user.name, timeSpent: total});
+    }
+    return times
+}
