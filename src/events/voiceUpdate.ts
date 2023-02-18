@@ -1,7 +1,7 @@
 import { VoiceState } from "discord.js";
 import { createSession, updateSession } from "../database/event";
 
-export const voiceUpdate = async (oldState: VoiceState, newState: VoiceState) => {
+export const onVoiceUpdate = async (oldState: VoiceState, newState: VoiceState) => {
     let newUserChannel = newState.channel;
     let oldUserChannel = oldState.channel;
 

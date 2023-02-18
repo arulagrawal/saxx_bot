@@ -2,7 +2,7 @@ import { Client } from "discord.js";
 import { IntentOptions } from "./config/IntentOptions";
 import { onInteraction } from "./events/newInteraction";
 import { onReady } from "./events/onReady";
-import { voiceUpdate } from "./events/voiceUpdate";
+import { onVoiceUpdate } from "./events/voiceUpdate";
 import { validateEnv } from "./utils/validateEnv";
 
 (async () => {
@@ -17,7 +17,7 @@ import { validateEnv } from "./utils/validateEnv";
   );
 
   BOT.on("voiceStateUpdate", async (oldState, newState) => {
-    await voiceUpdate(oldState, newState);
+    await onVoiceUpdate(oldState, newState);
   });
 
 
