@@ -5,13 +5,6 @@ import { onReady } from "./events/onReady";
 import { voiceUpdate } from "./events/voiceUpdate";
 import { validateEnv } from "./utils/validateEnv";
 
-interface event {
-  joinTime?: Date
-  leaveTime?: Date
-}
-
-let dates: Record<string, event> = {};
-
 (async () => {
   if (!validateEnv()) return;
   const BOT = new Client({ intents: IntentOptions });
