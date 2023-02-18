@@ -1,6 +1,6 @@
 ### a discord bot for the saxx server
 
-You need to go to the developer portal and obtain your bot's token and place that token in `.env` at the root with the format `BOT_TOKEN=tokenyougohere`.
+The bot requires environment variables in `.env`. For the format, look at `.env.sample`.
 
 This is a typescript project.
 
