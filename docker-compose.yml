@@ -1,0 +1,5 @@
+services:
+  bot:
+    image: docker.io/yamchah2/saxx_bot 
+    env_file:
+      - .env
