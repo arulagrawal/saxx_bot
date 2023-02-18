@@ -28,12 +28,12 @@ export const leaderboard: Command = {
             .setTitle("Leaderboard")
             .setDescription("The users with the most time spent in a voice channel.")
             .setTimestamp()
-        
-        const users = (await getTotalTimeForAllUsers()).sort((a, b) => b.timeSpent - a.timeSpent).splice(0, numUsers);
-        
-        embed.addFields({name: `Top ${users.length}`, value: users.map(u => u.username).join('\n'), inline: true},
-        {name: `Time Spent`, value: users.map(u => dayjs.duration(u.timeSpent).humanize()).join('\n'), inline: true});
 
-        await interaction.reply({embeds: [embed]});
+        const users = (await getTotalTimeForAllUsers()).sort((a, b) => b.timeSpent - a.timeSpent).splice(0, numUsers);
+
+        embed.addFields({ name: `Top ${users.length}`, value: users.map(u => u.username).join('\n'), inline: true },
+            { name: `Time Spent`, value: users.map(u => dayjs.duration(u.timeSpent).humanize()).join('\n'), inline: true });
+
+        await interaction.reply({ embeds: [embed] });
     }
 };

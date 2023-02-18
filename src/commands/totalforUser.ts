@@ -10,7 +10,7 @@ dayjs.extend(relativeTime);
 
 export const totalForUser: Command = {
     data: new SlashCommandBuilder()
-        .setName("user")
+        .setName("total")
         .setDescription("Check the total time spent for a given user.")
         .addUserOption((option) =>
             option
@@ -21,7 +21,7 @@ export const totalForUser: Command = {
     run: async (interaction) => {
         await interaction.deferReply();
         const user = interaction.options.getUser("user", true);
-        
+
         if (user.id) {
             const timeSpentInMilliseconds = await getTimeSpentTotal(user.id);
             console.log(`timespent: ${timeSpentInMilliseconds}`)

@@ -21,7 +21,7 @@ export const todayForUser: Command = {
     run: async (interaction) => {
         await interaction.deferReply();
         const user = interaction.options.getUser("user", true);
-        
+
         if (user.id) {
             const timeSpentInMilliseconds = await getTimeSpentToday(user.id);
             console.log(`timespent: ${timeSpentInMilliseconds}`)

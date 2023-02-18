@@ -86,7 +86,7 @@ export async function getTimeSpentTotal(snowflake: string) {
             },
         });
         totalTime += now.valueOf() - currentSession.joinTime.valueOf()
-    } catch (e) {}
+    } catch (e) { }
 
     sessions.forEach(session => {
         const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
@@ -126,7 +126,7 @@ export async function getTimeSpentToday(snowflake: string) {
             },
         });
         totalTime += now.valueOf() - currentSession.joinTime.valueOf()
-    } catch (e) {}
+    } catch (e) { }
 
     // add the durations for all the other sessions 
     sessions.forEach(session => {
@@ -149,7 +149,8 @@ export async function getTotalTimeForAllUsers() {
     let times: time[] = [];
     for await (const user of users) {
         const total = await getTimeSpentTotal(user.snowflake);
-        times.push({snowflake: user.snowflake, username: user.name, timeSpent: total});
+        times.push({ snowflake: user.snowflake, username: user.name, timeSpent: total });
     }
+
     return times
 }
