@@ -4,20 +4,16 @@ import { createSession, updateSession } from "../database/event";
 export const voiceUpdate = async (oldState: VoiceState, newState: VoiceState) => {
     let newUserChannel = newState.channel;
     let oldUserChannel = oldState.channel;
+
     if (oldUserChannel === null && newUserChannel !== null) {
-        const user = newState.member?.user?.username as string;
-        console.log(`${user} joined`);
-        const date = new Date();
+        const username = newState.member?.user?.username as string;
+        const snowflake = newState.member?.user?.id as string;
 
-        const session = createSession(user, date);
-        console.log(session);
+        const session = createSession(snowflake, username, new Date());
     } else if (oldUserChannel !== null && newUserChannel === null) {
-        const user = oldState.member?.user?.username as string;
-        console.log(`${user} left`);
-        const date = new Date();
+        const snowflake = newState.member?.user?.id as string;
 
-        const session = updateSession(user, date);
-        console.log(session);
+        const session = updateSession(snowflake, new Date());
     } else if (
         oldUserChannel !== null &&
         newUserChannel !== null &&

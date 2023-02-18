@@ -4,15 +4,16 @@ import { prisma } from "./db";
 
 dayjs.extend(utc);
 
-export async function createSession(username: string, startTime: Date) {
+export async function createSession(snowflake: string, username: string, startTime: Date) {
     const c = await prisma.currentSession.create({
         data: {
             user: {
                 connectOrCreate: {
                     where: {
-                        name: username,
+                        snowflake: snowflake,
                     },
                     create: {
+                        snowflake: snowflake,
                         name: username,
                     },
                 },
@@ -23,13 +24,13 @@ export async function createSession(username: string, startTime: Date) {
     return c;
 }
 
-export async function updateSession(username: string, endTime: Date) {
+export async function updateSession(snowflake: string, endTime: Date) {
     // we can assume that the user has a corresponding session in currentsessions.
 
     // we can delete the current session and create a completed session.
     const user = await prisma.user.findUnique({
         where: {
-            name: username,
+            snowflake: snowflake,
         },
         include: {
             CurrentSession: true,
@@ -51,13 +52,8 @@ export async function updateSession(username: string, endTime: Date) {
     const completedSession = await prisma.completedSession.create({
         data: {
             user: {
-                connectOrCreate: {
-                    where: {
-                        name: username,
-                    },
-                    create: {
-                        name: username,
-                    },
+                connect: {
+                    snowflake: snowflake,
                 },
             },
             joinTime: currentSession.joinTime,
@@ -68,11 +64,11 @@ export async function updateSession(username: string, endTime: Date) {
     return completedSession;
 }
 
-export async function getTimeSpentTotal(username: string) {
+export async function getTimeSpentTotal(snowflake: string) {
     const sessions = await prisma.completedSession.findMany({
         where: {
             user: {
-                name: username,
+                snowflake: snowflake,
             },
         },
     });
@@ -87,14 +83,16 @@ export async function getTimeSpentTotal(username: string) {
     return totalTime;
 }
 
-export async function getTimeSpentToday(username: string) {
+export async function getTimeSpentToday(snowflake: string) {
     const now = dayjs.utc().toDate();
-    const end = dayjs.utc().endOf('day').toDate();
     const start = dayjs.utc().startOf('day').toDate();
+    const end = dayjs.utc().endOf('day').toDate();
+
+
     const sessions = await prisma.completedSession.findMany({
         where: {
             user: {
-                name: username,
+                snowflake: snowflake,
             },
             leaveTime: {
                 gte: start,
@@ -105,17 +103,19 @@ export async function getTimeSpentToday(username: string) {
 
     let totalTime = 0;
 
+    // try to incorporate the current session
     try {
         const currentSession = await prisma.currentSession.findFirstOrThrow({
             where: {
                 user: {
-                    name: username,
+                    snowflake: snowflake,
                 },
             },
         });
         totalTime += now.valueOf() - currentSession.joinTime.valueOf()
     } catch (e) {}
 
+    // add the durations for all the other sessions 
     sessions.forEach(session => {
         const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
         totalTime += duration;

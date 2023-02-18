@@ -11,24 +11,24 @@ datasource db {
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
+  snowflake        String             @id @unique
+  name             String
   totalTime        Int                @default(0)
   CurrentSession   CurrentSession?
   CompletedSession CompletedSession[]
 }
 
 model CurrentSession {
-  id       Int      @id @default(autoincrement())
-  user     User     @relation(fields: [userId], references: [id])
-  joinTime DateTime
-  userId   Int      @unique
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userSnowflake], references: [snowflake])
+  joinTime      DateTime
+  userSnowflake String   @unique
 }
 
 model CompletedSession {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
-  joinTime  DateTime
-  leaveTime DateTime
-  userId    Int
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userSnowflake], references: [snowflake])
+  joinTime      DateTime
+  leaveTime     DateTime
+  userSnowflake String
 }

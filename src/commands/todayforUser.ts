@@ -12,24 +12,24 @@ export const todayForUser: Command = {
     data: new SlashCommandBuilder()
         .setName("today")
         .setDescription("Check the time spent today for a given user.")
-        .addStringOption((option) =>
+        .addUserOption((option) =>
             option
-                .setName("username")
+                .setName("user")
                 .setDescription("The user you want to check for.")
                 .setRequired(true)
         ),
     run: async (interaction) => {
         await interaction.deferReply();
-        const text = interaction.options.get("username", true);
+        const user = interaction.options.getUser("user", true);
         
-        if (text.value) {
-            const timeSpentInMilliseconds = await getTimeSpentToday(text.value as string);
+        if (user.id) {
+            const timeSpentInMilliseconds = await getTimeSpentToday(user.id);
             console.log(`timespent: ${timeSpentInMilliseconds}`)
             if (!timeSpentInMilliseconds || timeSpentInMilliseconds == 0) {
-                await interaction.editReply(`${text.value as string} has not spent any time in text channels today.`)
+                await interaction.editReply(`${user.username} has not spent any time in voice channels today.`)
                 return
             }
-            await interaction.editReply(dayjs.duration(timeSpentInMilliseconds).humanize());
+            await interaction.editReply(`${user.username} has spent ${dayjs.duration(timeSpentInMilliseconds).humanize()} in voice channels today.`);
         }
         else {
             await interaction.editReply("something went wrong getting your input :(")
