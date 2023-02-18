@@ -74,6 +74,19 @@ export async function getTimeSpentTotal(snowflake: string) {
     });
 
     let totalTime = 0;
+    const now = dayjs.utc().toDate();
+
+    // try to incorporate the current session
+    try {
+        const currentSession = await prisma.currentSession.findFirstOrThrow({
+            where: {
+                user: {
+                    snowflake: snowflake,
+                },
+            },
+        });
+        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
+    } catch (e) {}
 
     sessions.forEach(session => {
         const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
