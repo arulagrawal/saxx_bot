@@ -29,16 +29,19 @@ export async function updateSession(snowflake: string, endTime: Date) {
     // we can assume that the user has a corresponding session in currentsessions.
 
     // we can delete the current session and create a completed session.
-    const user = await prisma.user.findUnique({
-        where: {
-            snowflake: snowflake,
-        },
-        include: {
-            CurrentSession: true,
-        }
-    });
+    let id: number | undefined;
+    try {
+        const user = await prisma.user.findUniqueOrThrow({
+            where: {
+                snowflake: snowflake,
+            },
+            include: {
+                CurrentSession: true,
+            }
+        });
+        id = user?.CurrentSession?.id;
+    } catch (e) { return };
 
-    const id = user?.CurrentSession?.id;
     if (!id) {
         // there is no current session, the user was already connected when the bot joined :(
         // in the future the bot could look at who is connected when the bot joins?
@@ -190,6 +193,7 @@ interface time {
     timeSpent: number;
 }
 
+// TODO: what if there are no users in the db?
 export async function getTotalTimeForAllUsers() {
     const users = await prisma.user.findMany();
 
