@@ -96,6 +96,52 @@ export async function getTimeSpentTotal(snowflake: string) {
     return totalTime;
 }
 
+export async function getTimeSpentInTimeRange(snowflake: string, time_period: time_range) {
+
+    if (time_period == "today") {
+        return getTimeSpentToday(snowflake);
+    } else if (time_period == "total") {
+        return getTimeSpentTotal(snowflake);
+    }
+
+    const now = dayjs.utc().toDate();
+    const start = dayjs.utc().startOf(time_period as dayjs.OpUnitType).toDate();
+
+    const sessions = await prisma.completedSession.findMany({
+        where: {
+            user: {
+                snowflake: snowflake,
+            },
+            leaveTime: {
+                gte: start,
+                lte: now,
+            },
+        },
+    });
+
+    let totalTime = 0;
+
+    // try to incorporate the current session
+    try {
+        const currentSession = await prisma.currentSession.findFirstOrThrow({
+            where: {
+                user: {
+                    snowflake: snowflake,
+                },
+            },
+        });
+        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
+    } catch (e) { }
+
+    // add the durations for all the other sessions 
+    sessions.forEach(session => {
+        const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
+        totalTime += duration;
+    });
+
+    return totalTime;
+}
+
 export async function getTimeSpentToday(snowflake: string) {
     const now = dayjs.utc().toDate();
     const start = dayjs.utc().startOf('day').toDate();
