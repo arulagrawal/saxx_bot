@@ -1,12 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { getTimeSpentTotal } from "../database/event";
+import { time_range } from "../enums/timeRanges";
 import { Command } from "../interfaces/command";
-
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
+import { formatNoTimeMessage, formatTimeMessage } from "../utils/formatter";
 
 export const totalForUser: Command = {
     data: new SlashCommandBuilder()
@@ -26,10 +22,10 @@ export const totalForUser: Command = {
             const timeSpentInMilliseconds = await getTimeSpentTotal(user.id);
             console.log(`timespent: ${timeSpentInMilliseconds}`)
             if (!timeSpentInMilliseconds || timeSpentInMilliseconds == 0) {
-                await interaction.editReply(`${user.username} has not spent any time in voice channels.`)
+                await interaction.editReply(formatNoTimeMessage(user.username, time_range.total));
                 return
             }
-            await interaction.editReply(`${user.username} has spent ${dayjs.duration(timeSpentInMilliseconds).humanize()} in voice channels.`);
+            await interaction.editReply(formatTimeMessage(user.username, timeSpentInMilliseconds, time_range.total));
 
         }
         else {
