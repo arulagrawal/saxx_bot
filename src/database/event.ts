@@ -68,6 +68,22 @@ export async function updateSession(snowflake: string, endTime: Date) {
     return completedSession;
 }
 
+// this function looks at a user's current session and returns the time between when the session was started and the current time
+async function getCurrentSessionTime(snowflake: string) {
+    const now = dayjs.utc().toDate();
+
+    try {
+        const currentSession = await prisma.currentSession.findFirstOrThrow({
+            where: {
+                user: {
+                    snowflake: snowflake,
+                },
+            },
+        });
+        return now.valueOf() - currentSession.joinTime.valueOf()
+    } catch (e) { return 0 }
+}
+
 export async function getTimeSpentTotal(snowflake: string) {
     const sessions = await prisma.completedSession.findMany({
         where: {
@@ -80,17 +96,7 @@ export async function getTimeSpentTotal(snowflake: string) {
     let totalTime = 0;
     const now = dayjs.utc().toDate();
 
-    // try to incorporate the current session
-    try {
-        const currentSession = await prisma.currentSession.findFirstOrThrow({
-            where: {
-                user: {
-                    snowflake: snowflake,
-                },
-            },
-        });
-        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
-    } catch (e) { }
+    totalTime += await getCurrentSessionTime(snowflake);
 
     sessions.forEach(session => {
         const duration = session.leaveTime.valueOf() - session.joinTime.valueOf();
@@ -126,17 +132,7 @@ export async function getTimeSpentInTimeRange(snowflake: string, time_period: ti
 
     let totalTime = 0;
 
-    // try to incorporate the current session
-    try {
-        const currentSession = await prisma.currentSession.findFirstOrThrow({
-            where: {
-                user: {
-                    snowflake: snowflake,
-                },
-            },
-        });
-        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
-    } catch (e) { }
+    totalTime += await getCurrentSessionTime(snowflake);
 
     // add the durations for all the other sessions 
     sessions.forEach(session => {
@@ -167,17 +163,7 @@ export async function getTimeSpentToday(snowflake: string) {
 
     let totalTime = 0;
 
-    // try to incorporate the current session
-    try {
-        const currentSession = await prisma.currentSession.findFirstOrThrow({
-            where: {
-                user: {
-                    snowflake: snowflake,
-                },
-            },
-        });
-        totalTime += now.valueOf() - currentSession.joinTime.valueOf()
-    } catch (e) { }
+    totalTime += await getCurrentSessionTime(snowflake);
 
     // add the durations for all the other sessions 
     sessions.forEach(session => {
