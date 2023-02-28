@@ -109,6 +109,7 @@ export async function getTimeSpentInTimeRange(snowflake: string, time_period: ti
     }
 
     const now = dayjs.utc().toDate();
+    // TODO: make it actually go back the specified duration instead of calender month or w/e 
     const start = dayjs.utc().startOf(time_period as dayjs.OpUnitType).toDate();
 
     const sessions = await prisma.completedSession.findMany({

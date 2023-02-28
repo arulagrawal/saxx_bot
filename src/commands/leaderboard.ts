@@ -22,8 +22,6 @@ export const leaderboard: Command = {
         ),
     run: async (interaction) => {
         const numUsers = (interaction.options.get("users", false)?.value ?? 5) as number;
-
-        console.log(numUsers);
         const embed = new EmbedBuilder()
             .setTitle("Leaderboard")
             .setDescription("The users with the most time spent in a voice channel.")
