@@ -5,7 +5,12 @@ export const validateEnv = () => {
     }
 
     if (!process.env.GUILD_ID) {
-        console.warn("Missing MongoDB connection.");
+        console.warn("Missing Guild ID.");
+        return false;
+    }
+
+    if (!process.env.DATABASE_URL) {
+        console.warn("Missing Database URL.");
         return false;
     }
 
