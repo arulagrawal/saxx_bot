@@ -4,6 +4,7 @@ import { Command } from "../interfaces/command";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { formatLeaderBoard } from "../utils/formatter";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -29,8 +30,7 @@ export const leaderboard: Command = {
 
         const users = (await getTotalTimeForAllUsers()).sort((a, b) => b.timeSpent - a.timeSpent).splice(0, numUsers);
 
-        embed.addFields({ name: `Top ${users.length}`, value: users.map(u => u.username).join('\n'), inline: true },
-            { name: `Time Spent`, value: users.map(u => dayjs.duration(u.timeSpent).humanize()).join('\n'), inline: true });
+        embed.addFields(...formatLeaderBoard(users));
 
         await interaction.reply({ embeds: [embed] });
     }

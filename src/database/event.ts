@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc"
 import { time_range } from "../enums/timeRanges";
+import { time } from "../interfaces/time";
 import { prisma } from "./db";
 
 dayjs.extend(utc);
@@ -172,12 +173,6 @@ export async function getTimeSpentToday(snowflake: string) {
     });
 
     return totalTime;
-}
-
-interface time {
-    snowflake: string;
-    username: string;
-    timeSpent: number;
 }
 
 // TODO: what if there are no users in the db?
