@@ -4,4 +4,4 @@ export enum time_range {
     month = "month",
     year = "year",
     total = "total",
-};
+}

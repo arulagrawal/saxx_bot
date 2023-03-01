@@ -41,7 +41,7 @@ export async function updateSession(snowflake: string, endTime: Date) {
             }
         });
         id = user?.CurrentSession?.id;
-    } catch (e) { return };
+    } catch (e) { return }
 
     if (!id) {
         // there is no current session, the user was already connected when the bot joined :(
@@ -95,7 +95,6 @@ export async function getTimeSpentTotal(snowflake: string) {
     });
 
     let totalTime = 0;
-    const now = dayjs.utc().toDate();
 
     totalTime += await getCurrentSessionTime(snowflake);
 
@@ -145,7 +144,6 @@ export async function getTimeSpentInTimeRange(snowflake: string, time_period: ti
 }
 
 export async function getTimeSpentToday(snowflake: string) {
-    const now = dayjs.utc().toDate();
     const start = dayjs.utc().startOf('day').toDate();
     const end = dayjs.utc().endOf('day').toDate();
 
@@ -179,7 +177,7 @@ export async function getTimeSpentToday(snowflake: string) {
 export async function getTotalTimeForAllUsers() {
     const users = await prisma.user.findMany();
 
-    let times: time[] = [];
+    const times: time[] = [];
     for await (const user of users) {
         const total = await getTimeSpentTotal(user.snowflake);
         times.push({ snowflake: user.snowflake, username: user.name, timeSpent: total });

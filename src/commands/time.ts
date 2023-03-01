@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { getTimeSpentInTimeRange, getTimeSpentToday } from "../database/event";
+import { getTimeSpentInTimeRange } from "../database/event";
 import { Command } from "../interfaces/command";
 import { formatNoTimeMessage, formatTimeMessage } from "../utils/formatter";
 import { time_range } from "../enums/timeRanges"
