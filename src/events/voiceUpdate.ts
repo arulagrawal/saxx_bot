@@ -12,7 +12,6 @@ export const onVoiceUpdate = async (oldState: VoiceState, newState: VoiceState) 
 
     if (oldUserChannel === null && newUserChannel !== null) {
         // if the user joins the afk channel directly, don't do anything
-        newState.selfMute
         if (newUserChannel.id == afkChannelID) {
             return;
         }
