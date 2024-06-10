@@ -3,3 +3,5 @@
 .env
 dev.db
 dev.db-journal
+.direnv/
+result/
