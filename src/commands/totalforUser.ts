@@ -3,6 +3,7 @@ import { getTimeSpentTotal } from "../database/event";
 import { time_range } from "../enums/timeRanges";
 import { Command } from "../interfaces/command";
 import { formatNoTimeMessage, formatTimeMessage } from "../utils/formatter";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export const totalForUser: Command = {
     data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ export const totalForUser: Command = {
                 .setDescription("The user you want to check for.")
                 .setRequired(true)
         ),
-    run: async (interaction) => {
+    run: async (interaction: ChatInputCommandInteraction) => {
         await interaction.deferReply();
         const user = interaction.options.getUser("user", true);
 

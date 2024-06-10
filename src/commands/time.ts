@@ -3,6 +3,7 @@ import { getTimeSpentInTimeRange } from "../database/event";
 import { Command } from "../interfaces/command";
 import { formatNoTimeMessage, formatTimeMessage } from "../utils/formatter";
 import { time_range } from "../enums/timeRanges"
+import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
 
 export const timeForUser: Command = {
     data: new SlashCommandBuilder()
@@ -27,8 +28,9 @@ export const timeForUser: Command = {
                     {name: "total", value: "total"}
                 )
         ),
-    run: async (interaction) => {
+    run: async (interaction: ChatInputCommandInteraction) => {
         await interaction.deferReply();
+
         const user = interaction.options.getUser("user", true);
         const time = interaction.options.get("time", true);
 
